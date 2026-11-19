@@ -100,4 +100,8 @@ def _original_author(media: dict) -> str | None:
         for e in edges:
             if re.match(re.escape(role) + r"\b", e.get("role") or ""):
                 return ((e.get("node") or {}).get("name") or {}).get("full")
-    return None
+    # no story credit at all - the manga of an original anime ('Do It Yourself!!': only 'Art: Koyubita'):
+    # its one artist is the only person it is credited to
+    artists = {((e.get("node") or {}).get("name") or {}).get("full") for e in edges
+               if re.match(r"Art\b", e.get("role") or "")} - {None, ""}
+    return artists.pop() if len(artists) == 1 else None

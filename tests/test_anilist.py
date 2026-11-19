@@ -270,3 +270,10 @@ def test_one_novel_of_the_author_still_gives_the_full_name():
     media = [_media("NOVEL", "Hell Mode: The Hardcore Gamer Dominates", "x", [("Story", "Hamuo")])]
     cand = AniList(FakeHttp(media)).series("Hell Mode", novel=True, authors=["Hamuo"])
     assert cand is not None and not cand.exact and cand.meta.series.startswith("Hell Mode: The Hardcore")
+
+
+def test_the_manga_of_an_original_anime_goes_to_its_one_artist():
+    diy = _media("MANGA", "Do It Yourself!!", "Do It Yourself!!", [("Art", "Koyubita")])
+    assert AniList(FakeHttp([diy])).series("Do It Yourself!!", novel=False).meta.authors == ["Koyubita"]
+    two = _media("MANGA", "Two Artists", "Two Artists", [("Art", "A Person"), ("Art", "B Person")])
+    assert AniList(FakeHttp([two])).series("Two Artists", novel=False) is None  # whose? unknown: no guess
